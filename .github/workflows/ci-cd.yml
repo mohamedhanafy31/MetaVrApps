@@ -33,6 +33,9 @@ jobs:
     - name: Run type check
       run: npx tsc --noEmit
     
+    - name: Download Firebase service account
+      run: npm run download-file
+    
     - name: Build application
       run: npm run build
       env:
