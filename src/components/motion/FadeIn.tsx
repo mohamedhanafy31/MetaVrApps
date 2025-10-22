@@ -136,7 +136,7 @@ export function SlideIn({
       transition={{ 
         duration: prefersReducedMotion ? 0.1 : duration * config.duration, 
         delay, 
-        ease: [0.25, 0.46, 0.45, 0.94]
+        ease: "easeOut"
       }}
     >
       {children}
@@ -236,7 +236,7 @@ export function StaggerItem({ children, className }: StaggerItemProps) {
           y: 0,
           transition: { 
             duration: prefersReducedMotion ? 0.1 : 0.3 * config.duration, 
-            ease: [0.25, 0.46, 0.45, 0.94]
+            ease: "easeOut"
           }
         }
       }}
