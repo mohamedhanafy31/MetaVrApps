@@ -37,11 +37,11 @@ export async function PUT(request: NextRequest) {
     const accessRequestData = accessRequestDoc.data() as Record<string, unknown>;
 
     // Fetch application trial defaults if needed
-    const applicationId: string | undefined = accessRequestData?.applicationId;
+    const applicationId: string | undefined = accessRequestData?.applicationId as string | undefined;
     let applicationData: Record<string, unknown> | null = null;
     if (applicationId) {
       const appDoc = await db.collection('applications').doc(applicationId).get();
-      applicationData = appDoc.exists ? appDoc.data() : null;
+      applicationData = appDoc.exists ? (appDoc.data() as Record<string, unknown>) : null;
     }
 
     // Find or create user by email (suspended on rejection)

@@ -27,12 +27,13 @@ function Card({ className, variant = "default", glowColor = "blue", ...props }: 
   }
 
   if (variant === "holographic" || variant === "premium" || variant === "elite") {
+    const { onDrag, onDragEnd, onDragStart, onAnimationStart, onAnimationEnd, onAnimationIteration, ...motionProps } = props;
     return (
       <motion.div
         className={cn(baseClasses, variantClasses[variant], className)}
         whileHover={{ y: -4 }}
         transition={{ duration: 0.2 }}
-        {...props}
+        {...motionProps}
       >
         {/* Shimmer effect for premium variants */}
         {(variant === "premium" || variant === "elite") && (
@@ -44,6 +45,7 @@ function Card({ className, variant = "default", glowColor = "blue", ...props }: 
   }
 
   if (variant === "floating") {
+    const { onDrag, onDragEnd, onDragStart, onAnimationStart, onAnimationEnd, onAnimationIteration, ...motionProps } = props;
     return (
       <motion.div
         className={cn(baseClasses, variantClasses[variant], className)}
@@ -51,7 +53,7 @@ function Card({ className, variant = "default", glowColor = "blue", ...props }: 
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
         whileHover={{ y: -2 }}
-        {...props}
+        {...motionProps}
       />
     )
   }

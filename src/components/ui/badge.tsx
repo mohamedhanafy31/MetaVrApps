@@ -52,6 +52,7 @@ function Badge({
   const Comp = asChild ? Slot : "span"
 
   if (animated && variant === "active") {
+    const { onDrag, onDragEnd, onDragStart, onAnimationStart, onAnimationEnd, onAnimationIteration, ...motionProps } = props;
     return (
       <motion.span
         data-slot="badge"
@@ -65,7 +66,7 @@ function Badge({
           repeat: Infinity, 
           ease: "easeInOut" 
         }}
-        {...props}
+        {...motionProps}
       >
         {children}
       </motion.span>

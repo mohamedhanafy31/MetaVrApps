@@ -19,6 +19,7 @@ function Input({ className, type, variant = "default", error = false, ...props }
   const errorClasses = error ? "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/50" : ""
 
   if (variant === "vr-glow") {
+    const { onDrag, onDragEnd, onDragStart, onAnimationStart, onAnimationEnd, onAnimationIteration, ...motionProps } = props;
     return (
       <motion.input
         type={type}
@@ -26,7 +27,7 @@ function Input({ className, type, variant = "default", error = false, ...props }
         className={cn(baseClasses, variantClasses[variant], errorClasses, className)}
         whileFocus={{ scale: 1.01 }}
         transition={{ duration: 0.2 }}
-        {...props}
+        {...motionProps}
       />
     )
   }

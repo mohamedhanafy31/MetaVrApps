@@ -44,11 +44,11 @@ export async function PUT(request: NextRequest) {
     console.log('Access request data:', accessRequestData);
 
     // Fetch application to derive trial defaults
-    const applicationId: string | undefined = accessRequestData?.applicationId;
+    const applicationId: string | undefined = accessRequestData?.applicationId as string | undefined;
     let applicationData: Record<string, unknown> | null = null;
     if (applicationId) {
       const appDoc = await db.collection('applications').doc(applicationId).get();
-      applicationData = appDoc.exists ? appDoc.data() : null;
+      applicationData = appDoc.exists ? (appDoc.data() as Record<string, unknown>) : null;
     }
 
     // Find or create user by email

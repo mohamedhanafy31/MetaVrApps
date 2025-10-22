@@ -108,7 +108,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       if (response.ok) {
         window.location.href = '/admin/login';
       }
-    } catch {
+    } catch (error) {
       console.error('Logout failed:', error);
     }
   };

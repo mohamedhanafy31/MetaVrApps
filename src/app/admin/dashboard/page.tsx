@@ -88,7 +88,7 @@ export default function AdminDashboard() {
         const appsData = await appsResponse.json();
         setApplications(appsData.data);
       }
-    } catch {
+    } catch (error) {
       console.error('Error fetching dashboard data:', error);
       toast.error('Failed to load dashboard data');
     } finally {
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
       } else {
         toast.error('Failed to approve request');
       }
-    } catch {
+    } catch (error) {
       toast.error('An error occurred');
     }
   };
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
       } else {
         toast.error('Failed to reject request');
       }
-    } catch {
+    } catch (error) {
       toast.error('An error occurred');
     }
   };
@@ -169,7 +169,7 @@ export default function AdminDashboard() {
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <FadeIn delay={0}>
-                <AdvancedHolographicCard variant="premium" intensity="medium">
+                <AdvancedHolographicCard>
                   <HoverCard>
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -188,7 +188,7 @@ export default function AdminDashboard() {
               </FadeIn>
 
               <FadeIn delay={0.1}>
-                <AdvancedHolographicCard variant="premium" intensity="medium">
+                <AdvancedHolographicCard>
                   <HoverCard>
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -207,7 +207,7 @@ export default function AdminDashboard() {
               </FadeIn>
 
               <FadeIn delay={0.2}>
-                <AdvancedHolographicCard variant="premium" intensity="medium">
+                <AdvancedHolographicCard>
                   <HoverCard>
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -226,7 +226,7 @@ export default function AdminDashboard() {
               </FadeIn>
 
               <FadeIn delay={0.3}>
-                <AdvancedHolographicCard variant="premium" intensity="medium">
+                <AdvancedHolographicCard>
                   <HoverCard>
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -313,7 +313,7 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {applications.map((app, index) => (
-                    <FloatingCard key={app.id} delay={index * 0.1}>
+                    <FloatingCard key={app.id}>
                       <Card variant="holographic" className="p-4 space-y-3">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-3">

@@ -50,7 +50,7 @@ export default function AdminLoginPage() {
       loginSchema.parse(formData);
       setErrors({});
       return true;
-    } catch {
+    } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors: Record<string, string> = {};
         error.issues.forEach((err) => {
@@ -124,7 +124,7 @@ export default function AdminLoginPage() {
         toast.error('Invalid credentials');
         await clientLog('client.login.invalid_credentials', {});
       }
-    } catch {
+    } catch (error) {
       toast.error('An error occurred. Please try again.');
       await clientLog('client.login.error', { error: String(error) });
     } finally {

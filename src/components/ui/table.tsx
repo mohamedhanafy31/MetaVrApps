@@ -65,13 +65,14 @@ function TableRow({ className, variant = "default", ...props }: TableRowProps) {
   }
 
   if (variant === "hover-lift") {
+    const { onDrag, onDragEnd, onDragStart, onAnimationStart, onAnimationEnd, onAnimationIteration, ...motionProps } = props;
     return (
       <motion.tr
         data-slot="table-row"
         className={cn(baseClasses, variantClasses[variant], className)}
         whileHover={{ y: -2 }}
         transition={{ duration: 0.2 }}
-        {...props}
+        {...motionProps}
       />
     )
   }

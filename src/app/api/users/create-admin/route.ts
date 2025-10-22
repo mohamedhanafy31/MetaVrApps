@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ success: true, message: 'Admin created', userId: docRef.id });
-  } catch (error: Record<string, unknown>) {
+  } catch (error: unknown) {
     return NextResponse.json({ success: false, message: 'Internal Server Error', error: String(error) }, { status: 500 });
   }
 }

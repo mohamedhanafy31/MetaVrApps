@@ -29,7 +29,8 @@ export function useStaggeredScrollAnimation(
   options: UseScrollAnimationOptions = {}
 ) {
   const {
-    triggerOnce = true
+    triggerOnce = true,
+    staggerDelay = 0.1
   } = options;
 
   const ref = useRef(null);
@@ -177,7 +178,7 @@ export function usePerformanceMode() {
        nav.connection.effectiveType === '2g');
     const hasLowMemory = nav.deviceMemory && nav.deviceMemory < 4;
       
-      setIsLowPerformance(isMobile || isSlowConnection || hasLowMemory);
+      setIsLowPerformance(Boolean(isMobile || isSlowConnection || hasLowMemory));
     };
 
     checkPerformance();

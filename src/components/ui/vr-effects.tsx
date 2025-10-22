@@ -283,4 +283,31 @@ export function ParticleBackground({ className = '', count = 50 }: ParticleBackg
   );
 }
 
+export function FloatingCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <motion.div
+      className={`relative ${className}`}
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.2 }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+export function AdvancedHolographicCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <motion.div
+      className={`relative ${className}`}
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.2 }}
+    >
+      <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/20 via-accent/20 to-secondary/20 blur-xl" />
+      <div className="relative bg-background/90 backdrop-blur-sm border border-primary/30 rounded-lg p-6">
+        {children}
+      </div>
+    </motion.div>
+  );
+}
+
 export default VREffects;

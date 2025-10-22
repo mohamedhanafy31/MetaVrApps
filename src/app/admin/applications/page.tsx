@@ -113,7 +113,7 @@ export default function ApplicationsManagementPage() {
       } else {
         toast.error('Failed to load applications');
       }
-    } catch {
+    } catch (error) {
       console.error('Error fetching applications:', error);
       toast.error('Failed to load applications');
     } finally {
@@ -156,7 +156,7 @@ export default function ApplicationsManagementPage() {
         const error = await response.json();
         toast.error(error.message || 'Failed to create application');
       }
-    } catch {
+    } catch (error) {
       toast.error('An error occurred while creating application');
     }
   };
@@ -177,7 +177,7 @@ export default function ApplicationsManagementPage() {
       } else {
         toast.error('Failed to update application status');
       }
-    } catch {
+    } catch (error) {
       toast.error('An error occurred');
     }
   };
@@ -197,7 +197,7 @@ export default function ApplicationsManagementPage() {
       } else {
         toast.error('Failed to delete all applications');
       }
-    } catch {
+    } catch (error) {
       toast.error('An error occurred while deleting applications');
     }
   };
@@ -217,7 +217,7 @@ export default function ApplicationsManagementPage() {
       } else {
         toast.error('Failed to delete application');
       }
-    } catch {
+    } catch (error) {
       toast.error('An error occurred while deleting application');
     }
   };
@@ -253,7 +253,7 @@ export default function ApplicationsManagementPage() {
       } else {
         toast.error('Failed to update application');
       }
-    } catch {
+    } catch (error) {
       toast.error('An error occurred');
     }
   };
