@@ -9,23 +9,14 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { HoverCard } from '@/components/motion/HoverCard';
-import { Reveal } from '@/components/motion/Reveal';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { 
-  Users, 
   Plus, 
   Search, 
-  MoreHorizontal, 
   UserCheck, 
   UserX, 
   Edit, 
-  Trash2,
-  Mail,
-  Building,
-  Calendar,
-  Shield,
-  Eye
+  Trash2
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -98,7 +89,10 @@ export default function UsersPage() {
         lastLogin: '2024-01-20'
       }
     ];
-    setUsers(mockUsers);
+    const timeoutId = setTimeout(() => {
+      setUsers(mockUsers);
+    }, 0);
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const filteredUsers = users.filter(user => {

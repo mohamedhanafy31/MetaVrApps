@@ -62,17 +62,20 @@ function Button({
 
   // Filter out Framer Motion props to prevent them from being passed to DOM elements
   const {
-    whileHover,
-    whileTap,
-    whileFocus,
-    whileInView,
-    animate,
-    initial,
-    exit,
-    transition,
-    variants,
     ...domProps
-  } = props as any
+  } = props as React.ComponentProps<"button"> & {
+    loading?: boolean;
+    ripple?: boolean;
+    whileHover?: unknown;
+    whileTap?: unknown;
+    whileFocus?: unknown;
+    whileInView?: unknown;
+    animate?: unknown;
+    initial?: unknown;
+    exit?: unknown;
+    transition?: unknown;
+    variants?: unknown;
+  }
 
   const buttonContent = (
     <>

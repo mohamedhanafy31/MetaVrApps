@@ -17,11 +17,17 @@ export function ThemeToggle({ className, showLabel = false }: ThemeToggleProps) 
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const savedTheme = localStorage.getItem('theme') as Theme;
     if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
-      setTheme(savedTheme);
+      const timeoutId = setTimeout(() => {
+        setTheme(savedTheme);
+      }, 0);
+      return () => clearTimeout(timeoutId);
     }
+    const timeoutId = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timeoutId);
   }, []);
 
   useEffect(() => {
@@ -36,14 +42,6 @@ export function ThemeToggle({ className, showLabel = false }: ThemeToggleProps) 
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
-  const getIcon = () => {
-    return theme === 'light' ? Sun : Moon;
-  };
-
-  const getLabel = () => {
-    return theme === 'light' ? 'Light' : 'Dark';
-  };
-
   if (!mounted) {
     return (
       <Button variant="ghost" size="sm" className={className}>
@@ -53,7 +51,8 @@ export function ThemeToggle({ className, showLabel = false }: ThemeToggleProps) 
     );
   }
 
-  const Icon = getIcon();
+  const Icon = theme === 'light' ? Sun : Moon;
+  const label = theme === 'light' ? 'Light' : 'Dark';
 
   return (
     <motion.div 
@@ -77,7 +76,7 @@ export function ThemeToggle({ className, showLabel = false }: ThemeToggleProps) 
             className="flex items-center"
           >
             <Icon className="w-4 h-4" />
-            {showLabel && <span className="ml-2">{getLabel()}</span>}
+            {showLabel && <span className="ml-2">{label}</span>}
           </motion.div>
         </AnimatePresence>
         

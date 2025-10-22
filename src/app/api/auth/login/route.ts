@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       message: 'Login successful',
       handshakeToken,
     });
-  } catch (error: any) {
+  } catch (error: Record<string, unknown>) {
     await writeLog('auth.login.error', { error: String(error), ms: Date.now() - reqStart });
     return NextResponse.json(
       { success: false, message: 'An error occurred during login' },

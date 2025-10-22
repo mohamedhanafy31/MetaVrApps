@@ -32,7 +32,7 @@ function Card({ className, variant = "default", glowColor = "blue", ...props }: 
         className={cn(baseClasses, variantClasses[variant], className)}
         whileHover={{ y: -4 }}
         transition={{ duration: 0.2 }}
-        {...(props as any)}
+        {...props}
       >
         {/* Shimmer effect for premium variants */}
         {(variant === "premium" || variant === "elite") && (
@@ -51,7 +51,7 @@ function Card({ className, variant = "default", glowColor = "blue", ...props }: 
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
         whileHover={{ y: -2 }}
-        {...(props as any)}
+        {...props}
       />
     )
   }

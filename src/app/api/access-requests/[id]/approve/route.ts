@@ -40,12 +40,12 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const accessRequestData = accessRequestDoc.data() as any;
+    const accessRequestData = accessRequestDoc.data() as Record<string, unknown>;
     console.log('Access request data:', accessRequestData);
 
     // Fetch application to derive trial defaults
     const applicationId: string | undefined = accessRequestData?.applicationId;
-    let applicationData: any | null = null;
+    let applicationData: Record<string, unknown> | null = null;
     if (applicationId) {
       const appDoc = await db.collection('applications').doc(applicationId).get();
       applicationData = appDoc.exists ? appDoc.data() : null;
@@ -99,8 +99,8 @@ export async function PUT(request: NextRequest) {
       // Attach application to existing user
       const userDoc = existingUserQuery.docs[0];
       userId = userDoc.id;
-      const userData = userDoc.data() as any;
-      const userApps: any[] = Array.isArray(userData?.applications) ? [...userData.applications] : [];
+      const userData = userDoc.data() as Record<string, unknown>;
+      const userApps: Record<string, unknown>[] = Array.isArray(userData?.applications) ? [...userData.applications] : [];
       const index = userApps.findIndex(a => a?.applicationId === applicationId);
       const appEntry = {
         applicationId,

@@ -338,7 +338,7 @@ export function PulseGlow({
   );
 }
 
-export default {
+const MotionComponents = {
   FadeIn,
   ScaleIn,
   SlideIn,
@@ -348,3 +348,5 @@ export default {
   HoverLift,
   PulseGlow
 };
+
+export default MotionComponents;

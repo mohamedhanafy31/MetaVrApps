@@ -65,7 +65,7 @@ function Badge({
           repeat: Infinity, 
           ease: "easeInOut" 
         }}
-        {...(props as any)}
+        {...props}
       >
         {children}
       </motion.span>

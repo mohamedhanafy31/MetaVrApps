@@ -140,7 +140,7 @@ export function createHandshakeToken(claims: HandshakeClaims, ttlSeconds = 60): 
 
 export function verifyHandshakeToken(token: string): (HandshakeClaims & { iat: number; exp: number }) | null {
   try {
-    return jwt.verify(token, SESSION_SECRET) as any;
+    return jwt.verify(token, SESSION_SECRET) as HandshakeClaims & { iat: number; exp: number };
   } catch {
     return null;
   }

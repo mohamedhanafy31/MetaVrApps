@@ -7,7 +7,6 @@ import { ThemeToggle } from '@/components/ui/theme-toggle';
 import {
   Users,
   Building2,
-  Clock,
   TrendingUp,
   Bell,
   Search,
@@ -44,7 +43,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   // Handle route changes and window resize
   useEffect(() => {
-    handleRouteChange();
+    const timeoutId = setTimeout(() => {
+      handleRouteChange();
+    }, 0);
+    return () => clearTimeout(timeoutId);
   }, [pathname]);
 
   useEffect(() => {
@@ -106,7 +108,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       if (response.ok) {
         window.location.href = '/admin/login';
       }
-    } catch (error) {
+    } catch {
       console.error('Logout failed:', error);
     }
   };

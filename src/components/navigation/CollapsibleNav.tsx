@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface CollapsibleSectionProps {
@@ -116,4 +116,6 @@ export function MobileCollapsibleNav({ className }: MobileCollapsibleNavProps) {
   );
 }
 
-export default { CollapsibleSection, MobileCollapsibleNav };
+const CollapsibleNavComponents = { CollapsibleSection, MobileCollapsibleNav };
+
+export default CollapsibleNavComponents;

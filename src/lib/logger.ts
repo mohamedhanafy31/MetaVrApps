@@ -20,7 +20,6 @@ export async function writeLog(event: string, details: Record<string, unknown> =
     };
     await fs.appendFile(LOG_FILE, JSON.stringify(entry) + '\n', 'utf8');
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error('writeLog error', err);
   }
 }

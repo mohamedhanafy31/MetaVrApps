@@ -12,16 +12,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { FadeIn, ScaleIn } from '@/components/motion/FadeIn';
+import { ScaleIn } from '@/components/motion/FadeIn';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { Loader2, CheckCircle, Mail, Building, User, Phone, FileText } from 'lucide-react';
+import { Loader2, CheckCircle, Mail, Building, User, FileText } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
 export default function AccessRequestPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [applications, setApplications] = useState([
+  const [applications] = useState([
     { id: '1', name: 'VR Training Simulator' },
     { id: '2', name: 'AR Design Studio' },
     { id: '3', name: 'Metaverse Conference Room' },
@@ -32,7 +32,6 @@ export default function AccessRequestPage() {
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
   } = useForm<CreateAccessRequest>({
     resolver: zodResolver(createAccessRequestSchema),
   });
@@ -56,7 +55,7 @@ export default function AccessRequestPage() {
         const error = await response.json();
         toast.error(error.message || 'Failed to submit request');
       }
-    } catch (error) {
+    } catch {
       toast.error('An error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -76,7 +75,7 @@ export default function AccessRequestPage() {
                 <div>
                   <h2 className="text-2xl font-bold text-foreground">Request Submitted!</h2>
                   <p className="text-muted-foreground mt-2">
-                    Thank you for your interest in MetaVR. We'll review your request and get back to you within 4 hours.
+                    Thank you for your interest in MetaVR. We&apos;ll review your request and get back to you within 4 hours.
                   </p>
                 </div>
                 <Button 

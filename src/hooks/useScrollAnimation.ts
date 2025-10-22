@@ -10,10 +10,7 @@ interface UseScrollAnimationOptions {
 
 export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
   const {
-    threshold = 0.2,
-    rootMargin = '0px',
-    triggerOnce = true,
-    staggerDelay = 0.1
+    triggerOnce = true
   } = options;
 
   const ref = useRef(null);
@@ -32,10 +29,7 @@ export function useStaggeredScrollAnimation(
   options: UseScrollAnimationOptions = {}
 ) {
   const {
-    threshold = 0.2,
-    rootMargin = '0px',
-    triggerOnce = true,
-    staggerDelay = 0.1
+    triggerOnce = true
   } = options;
 
   const ref = useRef(null);
@@ -61,7 +55,7 @@ export function useStaggeredScrollAnimation(
         timeouts.forEach(clearTimeout);
       };
     }
-  }, [isInView, itemCount, staggerDelay]);
+  }, [isInView, itemCount]);
 
   return {
     ref,
@@ -119,7 +113,10 @@ export function useAnimationSequence(
   useEffect(() => {
     if (!isRunning || currentStep >= steps.length) {
       if (currentStep >= steps.length) {
-        setIsRunning(false);
+        const timeoutId = setTimeout(() => {
+          setIsRunning(false);
+        }, 0);
+        return () => clearTimeout(timeoutId);
       }
       return;
     }
@@ -146,14 +143,19 @@ export function useReducedMotion() {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(mediaQuery.matches);
+    const timeoutId = setTimeout(() => {
+      setPrefersReducedMotion(mediaQuery.matches);
+    }, 0);
 
     const handleChange = (event: MediaQueryListEvent) => {
       setPrefersReducedMotion(event.matches);
     };
 
     mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    return () => {
+      clearTimeout(timeoutId);
+      mediaQuery.removeEventListener('change', handleChange);
+    };
   }, []);
 
   return prefersReducedMotion;
@@ -166,10 +168,14 @@ export function usePerformanceMode() {
     // Check for low-end device indicators
     const checkPerformance = () => {
       const isMobile = window.innerWidth < 768;
-      const isSlowConnection = (navigator as any).connection && 
-        ((navigator as any).connection.effectiveType === 'slow-2g' || 
-         (navigator as any).connection.effectiveType === '2g');
-      const hasLowMemory = (navigator as any).deviceMemory && (navigator as any).deviceMemory < 4;
+    const nav = navigator as Navigator & {
+      connection?: { effectiveType?: string };
+      deviceMemory?: number;
+    };
+    const isSlowConnection = nav.connection &&
+      (nav.connection.effectiveType === 'slow-2g' ||
+       nav.connection.effectiveType === '2g');
+    const hasLowMemory = nav.deviceMemory && nav.deviceMemory < 4;
       
       setIsLowPerformance(isMobile || isSlowConnection || hasLowMemory);
     };
@@ -316,7 +322,7 @@ export function useAnimationPreset(preset: 'mobile' | 'desktop' | 'auto' = 'auto
   };
 }
 
-export default {
+const ScrollAnimationHooks = {
   useScrollAnimation,
   useStaggeredScrollAnimation,
   useIntersectionObserver,
@@ -327,3 +333,5 @@ export default {
   useElementSize,
   useAnimationPreset
 };
+
+export default ScrollAnimationHooks;

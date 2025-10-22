@@ -8,7 +8,7 @@ export type LogEvent = {
   ts: string;
   level: 'info' | 'warn' | 'error' | 'debug';
   tag: string;
-  data?: Record<string, any> | string | null;
+  data?: Record<string, unknown> | string | null;
 };
 
 export function writeLog(event: LogEvent) {
@@ -24,18 +24,18 @@ export function writeLog(event: LogEvent) {
   }
 }
 
-export function info(tag: string, data?: Record<string, any> | string | null) {
+export function info(tag: string, data?: Record<string, unknown> | string | null) {
   writeLog({ ts: new Date().toISOString(), level: 'info', tag, data });
 }
 
-export function warn(tag: string, data?: Record<string, any> | string | null) {
+export function warn(tag: string, data?: Record<string, unknown> | string | null) {
   writeLog({ ts: new Date().toISOString(), level: 'warn', tag, data });
 }
 
-export function error(tag: string, data?: Record<string, any> | string | null) {
+export function error(tag: string, data?: Record<string, unknown> | string | null) {
   writeLog({ ts: new Date().toISOString(), level: 'error', tag, data });
 }
 
-export function debug(tag: string, data?: Record<string, any> | string | null) {
+export function debug(tag: string, data?: Record<string, unknown> | string | null) {
   writeLog({ ts: new Date().toISOString(), level: 'debug', tag, data });
 }

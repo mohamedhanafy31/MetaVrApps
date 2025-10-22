@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
     let accessRequests = querySnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
-    } as any));
+    } as Record<string, unknown>));
 
     // Filter by status in memory if needed
     if (status) {

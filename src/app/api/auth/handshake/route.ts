@@ -31,7 +31,7 @@ async function handleHandshake(request: NextRequest, token: string) {
 
     await writeLog('auth.handshake.success', { userId: claims.userId, role: claims.role, ms: Date.now() - start });
     return res;
-  } catch (err: any) {
+  } catch (err: Record<string, unknown>) {
     await writeLog('auth.handshake.error', { error: String(err) });
     return NextResponse.redirect(new URL('/admin/login?error=handshake', request.url), { status: 303 });
   }
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
     await writeLog('auth.handshake.success', { userId: claims.userId, role: claims.role, ms: Date.now() - start });
     return res;
-  } catch (err: any) {
+  } catch (err: Record<string, unknown>) {
     await writeLog('auth.handshake.error', { error: String(err) });
     return NextResponse.json({ success: false, message: 'Handshake failed' }, { status: 500 });
   }

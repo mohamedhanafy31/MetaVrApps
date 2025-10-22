@@ -61,8 +61,9 @@ export default function AccessRequestsAdminPage() {
         const data: AccessRequest[] = json?.data || []
         setRequests(data)
         setLastUpdated(new Date().toLocaleTimeString())
-      } catch (err: any) {
-        toast.error(err?.message || 'Failed to load access requests')
+      } catch (err: unknown) {
+        const error = err as Error;
+        toast.error(error?.message || 'Failed to load access requests')
       } finally {
         setLoading(false)
       }
@@ -82,8 +83,9 @@ export default function AccessRequestsAdminPage() {
       if (!res.ok) throw new Error('Approve failed')
       toast.success('Request approved')
       setRequests(prev => prev.map(r => (r.id === id ? { ...r, status: 'approved' } as AccessRequest : r)))
-    } catch (e: any) {
-      toast.error(e?.message || 'Approve failed')
+    } catch (e: unknown) {
+      const error = e as Error;
+      toast.error(error?.message || 'Approve failed')
     }
   }
 
@@ -97,8 +99,9 @@ export default function AccessRequestsAdminPage() {
       if (!res.ok) throw new Error('Reject failed')
       toast.success('Request rejected')
       setRequests(prev => prev.map(r => (r.id === id ? { ...r, status: 'rejected' } as AccessRequest : r)))
-    } catch (e: any) {
-      toast.error(e?.message || 'Reject failed')
+    } catch (e: unknown) {
+      const error = e as Error;
+      toast.error(error?.message || 'Reject failed')
     }
   }
 

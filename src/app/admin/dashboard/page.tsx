@@ -5,23 +5,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { HolographicCard, FloatingCard, AdvancedHolographicCard, DataVisualization, ParticleBackground } from '@/components/ui/vr-effects';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { FloatingCard, AdvancedHolographicCard } from '@/components/ui/vr-effects';
+import { FadeIn } from '@/components/motion/FadeIn';
 import { HoverCard } from '@/components/motion/HoverCard';
-import { Reveal } from '@/components/motion/Reveal';
-import { FadeIn, ScaleIn, StaggerContainer, StaggerItem, HoverLift } from '@/components/motion/FadeIn';
 import { 
   Users, 
   Building2, 
-  Clock, 
   TrendingUp, 
   CheckCircle, 
   XCircle, 
   Eye,
-  MoreHorizontal,
-  Settings
+  Settings,
+  Clock
 } from 'lucide-react';
-import Link from 'next/link';
 import { toast } from 'sonner';
 
 interface AccessRequest {
@@ -91,7 +88,7 @@ export default function AdminDashboard() {
         const appsData = await appsResponse.json();
         setApplications(appsData.data);
       }
-    } catch (error) {
+    } catch {
       console.error('Error fetching dashboard data:', error);
       toast.error('Failed to load dashboard data');
     } finally {
@@ -115,7 +112,7 @@ export default function AdminDashboard() {
       } else {
         toast.error('Failed to approve request');
       }
-    } catch (error) {
+    } catch {
       toast.error('An error occurred');
     }
   };
@@ -136,23 +133,11 @@ export default function AdminDashboard() {
       } else {
         toast.error('Failed to reject request');
       }
-    } catch (error) {
+    } catch {
       toast.error('An error occurred');
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'bg-success text-success-foreground';
-      case 'maintenance':
-        return 'bg-warning text-warning-foreground';
-      case 'inactive':
-        return 'bg-error text-error-foreground';
-      default:
-        return 'bg-muted text-muted-foreground';
-    }
-  };
 
   const getPlatformIcon = (platform: string) => {
     switch (platform) {

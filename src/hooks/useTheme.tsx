@@ -17,11 +17,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const savedTheme = localStorage.getItem('theme') as Theme;
     if (savedTheme) {
-      setTheme(savedTheme);
+      const timeoutId = setTimeout(() => {
+        setTheme(savedTheme);
+      }, 0);
+      return () => clearTimeout(timeoutId);
     }
+    const timeoutId = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const actualTheme = theme === 'system' 

@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const { event = 'client.log', details = {} } = body || {};
     await writeLog(String(event), { from: 'client', ...details });
     return NextResponse.json({ ok: true });
-  } catch (err: any) {
+  } catch (err: Record<string, unknown>) {
     await writeLog('client.log.error', { error: String(err) });
     return NextResponse.json({ ok: false }, { status: 500 });
   }

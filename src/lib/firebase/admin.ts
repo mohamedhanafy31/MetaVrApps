@@ -6,7 +6,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Get service account from environment variable or local file
-let serviceAccount: any;
+let serviceAccount: Record<string, unknown>;
 
 if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
   // Production: Use environment variable (Base64 encoded JSON)

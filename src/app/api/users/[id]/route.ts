@@ -35,7 +35,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Prepare update data
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       updatedAt: new Date(),
     };
 

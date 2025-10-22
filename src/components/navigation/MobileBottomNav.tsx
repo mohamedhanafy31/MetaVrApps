@@ -59,7 +59,7 @@ export function MobileBottomNav({ className }: MobileBottomNavProps) {
       className={`fixed bottom-0 left-0 right-0 z-50 bg-background/95 dark:bg-background/95 backdrop-blur-md border-t border-blue-500/20 dark:border-blue-500/30 dark-mode-transition ${className}`}
     >
       <nav className="flex items-center justify-around px-2 py-2">
-        {navigation.map((item, index) => {
+        {navigation.map((item) => {
           const Icon = item.icon;
           return (
             <Link

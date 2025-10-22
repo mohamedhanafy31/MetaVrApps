@@ -71,7 +71,7 @@ function TableRow({ className, variant = "default", ...props }: TableRowProps) {
         className={cn(baseClasses, variantClasses[variant], className)}
         whileHover={{ y: -2 }}
         transition={{ duration: 0.2 }}
-        {...(props as any)}
+        {...props}
       />
     )
   }

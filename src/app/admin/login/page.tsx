@@ -50,7 +50,7 @@ export default function AdminLoginPage() {
       loginSchema.parse(formData);
       setErrors({});
       return true;
-    } catch (error) {
+    } catch {
       if (error instanceof z.ZodError) {
         const newErrors: Record<string, string> = {};
         error.issues.forEach((err) => {
@@ -124,7 +124,7 @@ export default function AdminLoginPage() {
         toast.error('Invalid credentials');
         await clientLog('client.login.invalid_credentials', {});
       }
-    } catch (error) {
+    } catch {
       toast.error('An error occurred. Please try again.');
       await clientLog('client.login.error', { error: String(error) });
     } finally {
@@ -132,32 +132,32 @@ export default function AdminLoginPage() {
     }
   };
 
-  const handleForgotPassword = async () => {
-    const email = formData.email;
-    if (!email) {
-      toast.error('Please enter your email address first');
-      return;
-    }
+  // const handleForgotPassword = async () => {
+  //   const email = formData.email;
+  //   if (!email) {
+  //     toast.error('Please enter your email address first');
+  //     return;
+  //   }
 
-    try {
-      const response = await fetch('/api/auth/reset-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+  //   try {
+  //     const response = await fetch('/api/auth/reset-password', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ email }),
+  //     });
 
-      if (response.ok) {
-        toast.success('Password reset instructions sent to your email');
-        setShowForgotPassword(false);
-      } else {
-        toast.error('Failed to send reset instructions');
-      }
-    } catch (error) {
-      toast.error('An error occurred. Please try again.');
-    }
-  };
+  //     if (response.ok) {
+  //       toast.success('Password reset instructions sent to your email');
+  //       setShowForgotPassword(false);
+  //     } else {
+  //       toast.error('Failed to send reset instructions');
+  //     }
+  //   } catch {
+  //     toast.error('An error occurred. Please try again.');
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 dark:from-primary/10 dark:via-accent/10 dark:to-secondary/10 flex items-center justify-center p-4 dark-mode-transition">
@@ -297,7 +297,7 @@ export default function AdminLoginPage() {
                 <div className="text-center">
                   <h3 className="text-lg font-semibold">Reset Password</h3>
                   <p className="text-sm text-muted-foreground mt-2">
-                    Enter your email address and we'll send you instructions to reset your password.
+                    Enter your email address and we&apos;ll send you instructions to reset your password.
                   </p>
                 </div>
 

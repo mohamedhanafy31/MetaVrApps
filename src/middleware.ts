@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifySessionToken, isExpiringSoon, createSessionToken, createRememberMeToken } from '@/lib/auth/session';
 
 // Define protected routes
 const protectedRoutes = ['/admin'];
