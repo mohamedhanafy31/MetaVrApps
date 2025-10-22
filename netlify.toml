@@ -3,8 +3,11 @@
   publish = ".next"
 
 [build.environment]
-  NODE_VERSION = "18"
-  NPM_VERSION = "9"
+  NODE_VERSION = "20"
+  NPM_VERSION = "10"
+  NODE_ENV = "production"
+  SESSION_SECRET = "production-session-secret"
+  ADMIN_SETUP_TOKEN = "production-admin-token"
 
 # Next.js API routes
 [[plugins]]
