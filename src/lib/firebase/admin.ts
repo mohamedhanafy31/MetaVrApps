@@ -26,9 +26,9 @@ let app: FirebaseApp;
 try {
   const credentialPath = ensureCredentialsExist();
   
-  // Use require() pattern as specified - disable ESLint for this line
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const serviceAccount = require(credentialPath);
+  // Use fs.readFileSync for Next.js build compatibility
+  const serviceAccountContent = fs.readFileSync(credentialPath, 'utf8');
+  const serviceAccount = JSON.parse(serviceAccountContent);
   
   app = getApps().length === 0 
     ? initializeApp({

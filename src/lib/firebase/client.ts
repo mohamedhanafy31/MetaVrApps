@@ -16,9 +16,9 @@ function getFirebaseConfig() {
   }
   
   try {
-    // Use require() pattern as specified - disable ESLint for this line
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const serviceAccount = require(credentialPath);
+    // Use fs.readFileSync for Next.js build compatibility
+    const serviceAccountContent = fs.readFileSync(credentialPath, 'utf8');
+    const serviceAccount = JSON.parse(serviceAccountContent);
     
     // Extract Firebase client configuration from service account
     return {
