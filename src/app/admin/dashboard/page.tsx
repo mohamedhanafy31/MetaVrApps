@@ -154,31 +154,30 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-6">
+      <div className="flex items-center justify-center p-4 md:p-6">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading dashboard...</p>
+          <div className="animate-spin rounded-full h-8 w-8 md:h-12 md:w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground text-sm md:text-base">Loading dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
-          <div className="space-y-6">
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="space-y-4 md:space-y-6">
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               <FadeIn delay={0}>
                 <AdvancedHolographicCard>
                   <HoverCard>
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                        <CardTitle className="text-sm md:text-sm font-medium">Total Users</CardTitle>
                         <Users className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent>
-                        <div className="text-2xl font-bold">{kpiData.totalUsers}</div>
-                        <p className="text-xs text-muted-foreground">
+                        <div className="text-xl md:text-2xl font-bold">{kpiData.totalUsers}</div>
+                        <p className="text-xs md:text-xs text-muted-foreground">
                           +12% from last month
                         </p>
                       </CardContent>
@@ -192,12 +191,12 @@ export default function AdminDashboard() {
                   <HoverCard>
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Applications</CardTitle>
+                        <CardTitle className="text-sm md:text-sm font-medium">Applications</CardTitle>
                         <Building2 className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent>
-                        <div className="text-2xl font-bold">{kpiData.totalApplications}</div>
-                        <p className="text-xs text-muted-foreground">
+                        <div className="text-xl md:text-2xl font-bold">{kpiData.totalApplications}</div>
+                        <p className="text-xs md:text-xs text-muted-foreground">
                           {applications.filter(app => app.status === 'active').length} active
                         </p>
                       </CardContent>
@@ -211,12 +210,12 @@ export default function AdminDashboard() {
                   <HoverCard>
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
+                        <CardTitle className="text-sm md:text-sm font-medium">Pending Requests</CardTitle>
                         <Clock className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent>
-                        <div className="text-2xl font-bold">{kpiData.pendingRequests}</div>
-                        <p className="text-xs text-muted-foreground">
+                        <div className="text-xl md:text-2xl font-bold">{kpiData.pendingRequests}</div>
+                        <p className="text-xs md:text-xs text-muted-foreground">
                           Awaiting review
                         </p>
                       </CardContent>
@@ -230,12 +229,12 @@ export default function AdminDashboard() {
                   <HoverCard>
                     <Card>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Trial Conversion</CardTitle>
+                        <CardTitle className="text-sm md:text-sm font-medium">Trial Conversion</CardTitle>
                         <TrendingUp className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent>
-                        <div className="text-2xl font-bold">{kpiData.trialConversionRate}%</div>
-                        <p className="text-xs text-muted-foreground">
+                        <div className="text-xl md:text-2xl font-bold">{kpiData.trialConversionRate}%</div>
+                        <p className="text-xs md:text-xs text-muted-foreground">
                           +5% from last month
                         </p>
                       </CardContent>
@@ -243,13 +242,13 @@ export default function AdminDashboard() {
                   </HoverCard>
                 </AdvancedHolographicCard>
               </FadeIn>
-            </div>
+      </div>
 
-            {/* Recent Access Requests */}
+      {/* Recent Access Requests */}
             <Card>
               <CardHeader>
-                <CardTitle>Recent Access Requests</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-lg md:text-xl">Recent Access Requests</CardTitle>
+                <CardDescription className="text-sm md:text-base">
                   Review and approve pending access requests
                 </CardDescription>
               </CardHeader>
@@ -260,49 +259,79 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {accessRequests.map((request) => (
-                      <div key={request.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="flex items-center space-x-4">
-                          <Avatar>
-                            <AvatarFallback>
-                              {request.fullName.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="font-medium">{request.fullName}</p>
-                            <p className="text-sm text-muted-foreground">{request.email}</p>
-                            <p className="text-sm text-muted-foreground">{request.company}</p>
+                    {accessRequests.slice(0, 3).map((request) => (
+                      <Card key={request.id} className="relative overflow-hidden">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-start justify-between">
+                            <div>
+                                <CardTitle className="text-lg">{request.fullName}</CardTitle>
+                                <div className="text-xs space-y-1">
+                                  <div className="truncate">{request.email}</div>
+                                  <div className="text-muted-foreground truncate">{request.company}</div>
+                                </div>
+                              </div>
+                            <Badge className="bg-yellow-100 text-yellow-800">
+                              Pending
+                            </Badge>
                           </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            size="sm"
-                            variant="vr-success"
-                            onClick={() => handleApproveRequest(request.id)}
-                          >
-                            <CheckCircle className="w-4 h-4 mr-1" />
-                            Approve
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => handleRejectRequest(request.id)}
-                          >
-                            <XCircle className="w-4 h-4 mr-1" />
-                            Reject
-                          </Button>
-                          <Button size="sm" variant="vr-secondary">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm text-muted-foreground">Job Title: {request.jobTitle || 'Not specified'}</span>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                              <span>Application</span>
+                              <span>{request.applicationId || 'Not specified'}</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between text-sm text-muted-foreground">
+                            <span>Submitted: {new Date(request.createdAt).toLocaleDateString()}</span>
+                          </div>
+
+                          <div className="flex items-center justify-between pt-2">
+                            <div className="flex space-x-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleApproveRequest(request.id)}
+                              >
+                                <CheckCircle className="w-4 h-4 mr-1" />
+                                Approve
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleRejectRequest(request.id)}
+                              >
+                                <XCircle className="w-4 h-4 mr-1" />
+                                Reject
+                              </Button>
+                            </div>
+                            <div className="flex space-x-1">
+                              <Button size="sm" variant="outline">
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
                     ))}
+                    {accessRequests.length > 3 && (
+                      <div className="text-center pt-2">
+                        <Button variant="outline" size="sm" className="text-xs">
+                          View {accessRequests.length - 3} more requests
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
-            </Card>
+      </Card>
 
-            {/* Application Status */}
+      {/* Application Status */}
             <Card>
               <CardHeader>
                 <CardTitle>Application Status</CardTitle>
@@ -311,57 +340,69 @@ export default function AdminDashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                   {applications.map((app) => (
-                    <FloatingCard key={app.id}>
-                      <Card variant="holographic" className="p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="text-2xl float-subtle">{getPlatformIcon(app.platform)}</div>
-                            <div>
-                              <h3 className="font-medium">{app.name}</h3>
-                              <p className="text-sm text-muted-foreground">{app.platform}</p>
-                            </div>
+                    <Card key={app.id} className="relative overflow-hidden">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <div>
+                              <CardTitle className="text-lg">{app.name}</CardTitle>
+                              <div className="text-xs space-y-1">
+                                <div className="truncate">{app.platform}</div>
+                                <div className="text-muted-foreground truncate">{app.status}</div>
+                              </div>
                           </div>
-                          <Badge 
-                            variant={app.status === 'active' ? 'active' : app.status === 'maintenance' ? 'maintenance' : 'inactive'}
-                            animated={app.status === 'active'}
-                          >
+                          <Badge className={
+                            app.status === 'active' ? 'bg-green-100 text-green-800' :
+                            app.status === 'maintenance' ? 'bg-orange-100 text-orange-800' :
+                            'bg-red-100 text-red-800'
+                          }>
                             {app.status}
                           </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-muted-foreground">Description: {app.description || 'No description'}</span>
                         </div>
                         
                         <div className="space-y-2">
                           <div className="flex justify-between text-sm">
                             <span>Users</span>
-                            <span>{app.currentUsers}/{app.maxConcurrentUsers}</span>
+                            <span>{app.currentUsers} / {app.maxConcurrentUsers}</span>
                           </div>
-                          <Progress 
-                            value={(app.currentUsers / app.maxConcurrentUsers) * 100} 
-                            variant="shimmer"
-                            color={app.status === 'active' ? 'blue' : app.status === 'maintenance' ? 'orange' : 'red'}
-                            animated={app.status === 'active'}
-                            className="h-2"
-                          />
+                          <Progress value={(app.currentUsers / app.maxConcurrentUsers) * 100} className="h-2" />
                         </div>
-                        
-                        <div className="flex justify-between">
-                          <Button size="sm" variant="vr-secondary">
-                            <Eye className="w-4 h-4 mr-1" />
-                            View
-                          </Button>
-                          <Button size="sm" variant="vr-primary">
-                            <Settings className="w-4 h-4 mr-1" />
-                            Configure
-                          </Button>
+
+                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                          <span>Trial: N/A</span>
+                          <span>Auth: Optional</span>
                         </div>
-                      </Card>
-                    </FloatingCard>
+
+                        <div className="flex items-center justify-between pt-2">
+                          <div className="flex space-x-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                            >
+                              <Eye className="w-4 h-4 mr-1" />
+                              View
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                            >
+                              <Settings className="w-4 h-4 mr-1" />
+                              Configure
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
                   ))}
                 </div>
               </CardContent>
-            </Card>
-          </div>
+      </Card>
     </div>
   );
 }

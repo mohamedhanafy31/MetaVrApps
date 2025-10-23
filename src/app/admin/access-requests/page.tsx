@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { HoverCard } from '@/components/motion/HoverCard'
 import { Reveal } from '@/components/motion/Reveal'
 import { toast } from 'sonner'
@@ -116,17 +118,18 @@ export default function AccessRequestsAdminPage() {
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div className="space-y-4 md:space-y-6">
+      {/* Header */}
+      <div className="flex flex-col gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Access Requests</h1>
-          <p className="text-muted-foreground">Review and take action on incoming access requests</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Access Requests</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Review and take action on incoming access requests</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <div className="space-y-1">
             <Label className="text-xs">Filter by status</Label>
             <Select value={status} onValueChange={(v: StatusFilter) => setStatus(v)}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px] min-h-[44px]" id="access-requests-status-filter">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -136,11 +139,12 @@ export default function AccessRequestsAdminPage() {
               </SelectContent>
             </Select>
           </div>
-          <Button variant="outline" onClick={() => setRefreshKey(k => k + 1)}>Refresh</Button>
+          <Button variant="outline" onClick={() => setRefreshKey(k => k + 1)} className="w-full sm:w-auto min-h-[44px]">Refresh</Button>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         <Reveal>
         <HoverCard>
         <Card>
@@ -176,6 +180,7 @@ export default function AccessRequestsAdminPage() {
         </Reveal>
       </div>
 
+      {/* Main Content */}
       <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Requests</CardTitle>
@@ -242,64 +247,66 @@ export default function AccessRequestsAdminPage() {
               <div className="text-center py-10 text-muted-foreground">No requests</div>
             ) : (
               requests.map((r) => (
-                <Card key={r.id} className="p-4">
-                  <div className="space-y-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate">{r.fullName}</div>
-                        <div className="text-sm text-muted-foreground truncate">{r.email}</div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          disabled={r.status !== 'pending'} 
-                          onClick={() => approve(r.id)}
-                          className="text-xs px-2 py-1"
-                        >
-                          Approve
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="destructive" 
-                          disabled={r.status !== 'pending'} 
-                          onClick={() => reject(r.id)}
-                          className="text-xs px-2 py-1"
-                        >
-                          Reject
-                        </Button>
-                      </div>
+                <Card key={r.id} className="relative overflow-hidden">
+                  <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                              <CardTitle className="text-lg truncate">{r.fullName}</CardTitle>
+                              <div className="text-xs space-y-1">
+                                <div className="truncate">{r.email}</div>
+                                <div className="text-muted-foreground truncate">{r.companyName}</div>
+                              </div>
+                            </div>
+                          <Badge className={`flex-shrink-0 ${
+                            r.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                            r.status === 'approved' ? 'bg-green-100 text-green-800' :
+                            'bg-red-100 text-red-800'
+                          }`}>
+                            {r.status}
+                          </Badge>
+                        </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm text-muted-foreground">Job Title: {r.jobTitle}</span>
                     </div>
                     
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Company:</span>
-                        <span className="font-medium">{r.companyName}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Job Title:</span>
-                        <span>{r.jobTitle}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Application:</span>
-                        <span className="font-medium">{r.applicationName || '-'}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Status:</span>
-                        <span className={`capitalize px-2 py-1 rounded-full text-xs ${
-                          r.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                          r.status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                          'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                        }`}>
-                          {r.status}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Submitted:</span>
-                        <span>{formatDate(r.createdAt)}</span>
+                        <span>Application</span>
+                        <span>{r.applicationName || 'Not specified'}</span>
                       </div>
                     </div>
-                  </div>
+
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <span>Submitted: {formatDate(r.createdAt)}</span>
+                    </div>
+
+                          <div className="flex items-center justify-between pt-2 gap-2">
+                            <div className="flex space-x-1 flex-1">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                disabled={r.status !== 'pending'}
+                                onClick={() => approve(r.id)}
+                                className="flex-1 min-w-0"
+                              >
+                                <span className="hidden sm:inline">Approve</span>
+                                <span className="sm:hidden">✓</span>
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                disabled={r.status !== 'pending'}
+                                onClick={() => reject(r.id)}
+                                className="flex-1 min-w-0"
+                              >
+                                <span className="hidden sm:inline">Reject</span>
+                                <span className="sm:hidden">✗</span>
+                              </Button>
+                            </div>
+                          </div>
+                  </CardContent>
                 </Card>
               ))
             )}

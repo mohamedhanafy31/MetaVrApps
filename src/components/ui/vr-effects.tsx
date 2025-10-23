@@ -66,8 +66,8 @@ export function VREffects({ className = '', intensity = 'medium' }: VREffectsPro
       };
     });
 
-    // Generate mobile particles
-    const mobileParticlesData: ParticleData[] = Array.from({ length: Math.floor(baseParticleCount * 0.3) }, (_, i) => {
+    // Generate mobile particles (reduced for performance)
+    const mobileParticlesData: ParticleData[] = Array.from({ length: Math.floor(baseParticleCount * 0.1) }, (_, i) => {
       const x = Math.random() * 1200;
       const scale = Math.random() * 0.3 + 0.7;
       const duration = Math.random() * 12 + 12;

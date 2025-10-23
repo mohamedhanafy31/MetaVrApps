@@ -65,7 +65,7 @@ export function MobileBottomNav({ className }: MobileBottomNavProps) {
             <Link
               key={item.name}
               href={item.href}
-              className="flex flex-col items-center space-y-1 px-2 py-2 rounded-lg transition-all duration-200 min-w-0 flex-1"
+              className="flex flex-col items-center space-y-1 px-3 py-3 rounded-lg transition-all duration-200 min-w-0 flex-1 min-h-[60px] justify-center"
             >
               <motion.div
                 className={`relative p-2 rounded-lg transition-all duration-200 ${

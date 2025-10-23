@@ -8,8 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Progress } from '@/components/ui/progress';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { DeleteUserDialog, DeleteAllUsersDialog } from '@/components/ui/confirmation-dialog';
 import { 
   Plus, 
   Search, 
@@ -47,6 +49,25 @@ export default function UsersPage() {
     role: 'user' as 'user' | 'moderator' | 'admin',
     company: '',
     trialLimit: 10
+  });
+
+  // Confirmation dialog states
+  const [deleteUserDialog, setDeleteUserDialog] = useState<{
+    isOpen: boolean;
+    user: User | null;
+    isLoading: boolean;
+  }>({
+    isOpen: false,
+    user: null,
+    isLoading: false
+  });
+
+  const [deleteAllUsersDialog, setDeleteAllUsersDialog] = useState<{
+    isOpen: boolean;
+    isLoading: boolean;
+  }>({
+    isOpen: false,
+    isLoading: false
   });
 
   // Mock data
@@ -163,8 +184,64 @@ export default function UsersPage() {
   };
 
   const handleDeleteUser = (userId: string) => {
-    setUsers(prev => prev.filter(user => user.id !== userId));
-    toast.success('User deleted successfully');
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      setDeleteUserDialog({
+        isOpen: true,
+        user,
+        isLoading: false
+      });
+    }
+  };
+
+  const confirmDeleteUser = async () => {
+    if (!deleteUserDialog.user) return;
+    
+    setDeleteUserDialog(prev => ({ ...prev, isLoading: true }));
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setUsers(prev => prev.filter(user => user.id !== deleteUserDialog.user!.id));
+      toast.success('User deleted successfully');
+      
+      setDeleteUserDialog({
+        isOpen: false,
+        user: null,
+        isLoading: false
+      });
+    } catch (error) {
+      toast.error('Failed to delete user');
+      setDeleteUserDialog(prev => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  const handleDeleteAllUsers = () => {
+    setDeleteAllUsersDialog({
+      isOpen: true,
+      isLoading: false
+    });
+  };
+
+  const confirmDeleteAllUsers = async () => {
+    setDeleteAllUsersDialog(prev => ({ ...prev, isLoading: true }));
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      setUsers([]);
+      toast.success('All users deleted successfully');
+      
+      setDeleteAllUsersDialog({
+        isOpen: false,
+        isLoading: false
+      });
+    } catch (error) {
+      toast.error('Failed to delete all users');
+      setDeleteAllUsersDialog(prev => ({ ...prev, isLoading: false }));
+    }
   };
 
   const handleToggleStatus = (userId: string) => {
@@ -202,30 +279,25 @@ export default function UsersPage() {
   };
 
   return (
-    <div className="p-6">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">User Management</h1>
-            <p className="text-muted-foreground">Manage user accounts and permissions</p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Button
-              variant="destructive"
-              onClick={() => {
-                if (confirm('Are you sure you want to delete all users?')) {
-                  setUsers([]);
-                  toast.success('All users deleted');
-                }
-              }}
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Delete All Users
-            </Button>
+    <div className="space-y-4 md:space-y-6">
+      {/* Header */}
+      <div className="flex flex-col gap-4">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold">User Management</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Manage user accounts and permissions</p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <Button
+            variant="destructive"
+            onClick={handleDeleteAllUsers}
+            className="w-full sm:w-auto min-h-[44px]"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Delete All Users
+          </Button>
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
               <DialogTrigger asChild>
-                <Button>
+                <Button className="w-full sm:w-auto min-h-[44px]">
                   <Plus className="w-4 h-4 mr-2" />
                   Create User
                 </Button>
@@ -314,12 +386,12 @@ export default function UsersPage() {
         {/* Filters */}
         <Card>
           <CardHeader>
-            <CardTitle>Filters</CardTitle>
+            <CardTitle>Users</CardTitle>
+            <CardDescription>Manage user accounts and their trial settings</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="search">Search</Label>
+            <div className="flex flex-col sm:flex-row gap-4 mb-6">
+              <div className="flex-1">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                   <Input
@@ -327,39 +399,35 @@ export default function UsersPage() {
                     placeholder="Search users..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 min-h-[44px] text-base"
                   />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="role">Role</Label>
-                <Select value={roleFilter} onValueChange={setRoleFilter}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="All roles" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Roles</SelectItem>
-                    <SelectItem value="user">User</SelectItem>
-                    <SelectItem value="moderator">Moderator</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="All statuses" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Statuses</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="suspended">Suspended</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <Select value={roleFilter} onValueChange={setRoleFilter}>
+                <SelectTrigger className="w-[180px] min-h-[44px] text-base" id="users-role-filter">
+                  <SelectValue placeholder="All roles" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Roles</SelectItem>
+                  <SelectItem value="user">User</SelectItem>
+                  <SelectItem value="moderator">Moderator</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-[180px] min-h-[44px] text-base" id="users-status-filter">
+                  <SelectValue placeholder="All statuses" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                  <SelectItem value="suspended">Suspended</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+
+            {/* Users List - Responsive */}
           </CardContent>
         </Card>
 
@@ -372,157 +440,171 @@ export default function UsersPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* Desktop Table View */}
-            <div className="hidden md:block overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Company</TableHead>
-                    <TableHead>Trial Usage</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Last Login</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredUsers.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>
-                        <div className="flex items-center space-x-3">
-                          <Avatar>
-                            <AvatarFallback>
-                              {user.displayName.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="font-medium">{user.displayName}</div>
-                            <div className="text-sm text-muted-foreground">{user.email}</div>
+            {/* Desktop Card View */}
+            <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {filteredUsers.map((user) => (
+                <Card key={user.id} className="relative overflow-hidden">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                          <CardTitle className="text-lg truncate">{user.displayName}</CardTitle>
+                          <div className="text-xs space-y-1">
+                            <div className="truncate">{user.email}</div>
+                            <div className="text-muted-foreground truncate">{user.company}</div>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>{getRoleBadge(user.role)}</TableCell>
-                      <TableCell>{user.company}</TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="text-sm">
-                            {user.trialUsed}/{user.trialLimit}
-                          </div>
-                          <div className="w-full bg-secondary rounded-full h-2">
-                            <div 
-                              className="bg-primary h-2 rounded-full" 
-                              style={{ width: `${(user.trialUsed / user.trialLimit) * 100}%` }}
-                            />
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>{getStatusBadge(user.status)}</TableCell>
-                      <TableCell>{user.lastLogin}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleEditUser(user)}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleToggleStatus(user.id)}
-                          >
-                            {user.status === 'active' ? (
-                              <UserX className="w-4 h-4" />
-                            ) : (
-                              <UserCheck className="w-4 h-4" />
-                            )}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDeleteUser(user.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                      </div>
+                      <Badge className={`flex-shrink-0 ${user.status === 'active' ? 'bg-green-100 text-green-800' : user.status === 'inactive' ? 'bg-gray-100 text-gray-800' : 'bg-red-100 text-red-800'}`}>
+                        {user.status === 'active' ? (
+                          <UserCheck className="w-3 h-3 mr-1" />
+                        ) : (
+                          <UserX className="w-3 h-3 mr-1" />
+                        )}
+                        {user.status}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      {getRoleBadge(user.role)}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Trial Usage</span>
+                        <span>{user.trialUsed} / {user.trialLimit}</span>
+                      </div>
+                      <Progress value={(user.trialUsed / user.trialLimit) * 100} className="h-2" />
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="text-sm text-muted-foreground">
+                        <div className="truncate">Company: {user.company}</div>
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        <div className="truncate">Last Login: {user.lastLogin}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2 gap-2">
+                      <div className="flex space-x-1 flex-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEditUser(user)}
+                          className="flex-1 min-w-0"
+                        >
+                          <Edit className="w-4 h-4 mr-1" />
+                          <span className="hidden sm:inline">Edit</span>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleToggleStatus(user.id)}
+                          className="flex-1 min-w-0"
+                        >
+                          {user.status === 'active' ? (
+                            <UserX className="w-4 h-4 mr-1" />
+                          ) : (
+                            <UserCheck className="w-4 h-4 mr-1" />
+                          )}
+                          <span className="hidden sm:inline">{user.status === 'active' ? 'Deactivate' : 'Activate'}</span>
+                        </Button>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDeleteUser(user.id)}
+                        className="flex-shrink-0"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
 
             {/* Mobile Card View */}
             <div className="md:hidden space-y-4">
               {filteredUsers.map((user) => (
-                <Card key={user.id} className="p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center space-x-3 flex-1">
-                      <Avatar>
-                        <AvatarFallback>
-                          {user.displayName.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate">{user.displayName}</div>
-                        <div className="text-sm text-muted-foreground truncate">{user.email}</div>
-                        <div className="flex items-center space-x-2 mt-1">
-                          {getRoleBadge(user.role)}
-                          {getStatusBadge(user.status)}
+                <Card key={user.id} className="relative overflow-hidden">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div>
+                          <CardTitle className="text-lg">{user.displayName}</CardTitle>
+                          <CardDescription className="flex items-center space-x-2">
+                            <span>{user.email}</span>
+                            <span>•</span>
+                            <span className="text-muted-foreground">{user.company}</span>
+                          </CardDescription>
                         </div>
+                      <Badge className={user.status === 'active' ? 'bg-green-100 text-green-800' : user.status === 'inactive' ? 'bg-gray-100 text-gray-800' : 'bg-red-100 text-red-800'}>
+                        {user.status === 'active' ? (
+                          <UserCheck className="w-3 h-3 mr-1" />
+                        ) : (
+                          <UserX className="w-3 h-3 mr-1" />
+                        )}
+                        {user.status}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      {getRoleBadge(user.role)}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Trial Usage</span>
+                        <span>{user.trialUsed} / {user.trialLimit}</span>
+                      </div>
+                      <Progress value={(user.trialUsed / user.trialLimit) * 100} className="h-2" />
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="text-sm text-muted-foreground">
+                        <div className="truncate">Company: {user.company}</div>
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        <div className="truncate">Last Login: {user.lastLogin}</div>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-1">
+
+                    <div className="flex items-center justify-between pt-2 gap-2">
+                      <div className="flex space-x-1 flex-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEditUser(user)}
+                          className="flex-1 min-w-0"
+                        >
+                          <Edit className="w-4 h-4 mr-1" />
+                          <span className="hidden sm:inline">Edit</span>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleToggleStatus(user.id)}
+                          className="flex-1 min-w-0"
+                        >
+                          {user.status === 'active' ? (
+                            <UserX className="w-4 h-4 mr-1" />
+                          ) : (
+                            <UserCheck className="w-4 h-4 mr-1" />
+                          )}
+                          <span className="hidden sm:inline">{user.status === 'active' ? 'Deactivate' : 'Activate'}</span>
+                        </Button>
+                      </div>
                       <Button
-                        variant="ghost"
                         size="sm"
-                        onClick={() => handleEditUser(user)}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleToggleStatus(user.id)}
-                      >
-                        {user.status === 'active' ? (
-                          <UserX className="w-4 h-4" />
-                        ) : (
-                          <UserCheck className="w-4 h-4" />
-                        )}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
+                        variant="destructive"
                         onClick={() => handleDeleteUser(user.id)}
+                        className="flex-shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
-                  </div>
-                  
-                  <div className="mt-3 space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Company:</span>
-                      <span>{user.company}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Trial Usage:</span>
-                      <span>{user.trialUsed}/{user.trialLimit}</span>
-                    </div>
-                    <div className="w-full bg-secondary rounded-full h-2">
-                      <div 
-                        className="bg-primary h-2 rounded-full" 
-                        style={{ width: `${(user.trialUsed / user.trialLimit) * 100}%` }}
-                      />
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Last Login:</span>
-                      <span>{user.lastLogin}</span>
-                    </div>
-                  </div>
+                  </CardContent>
                 </Card>
               ))}
             </div>
@@ -534,7 +616,6 @@ export default function UsersPage() {
             )}
           </CardContent>
         </Card>
-      </div>
 
       {/* Edit User Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -606,6 +687,33 @@ export default function UsersPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Confirmation Dialogs */}
+      {deleteUserDialog.user && (
+        <DeleteUserDialog
+          isOpen={deleteUserDialog.isOpen}
+          onClose={() => setDeleteUserDialog({
+            isOpen: false,
+            user: null,
+            isLoading: false
+          })}
+          onConfirm={confirmDeleteUser}
+          userName={deleteUserDialog.user.displayName}
+          userEmail={deleteUserDialog.user.email}
+          isLoading={deleteUserDialog.isLoading}
+        />
+      )}
+
+      <DeleteAllUsersDialog
+        isOpen={deleteAllUsersDialog.isOpen}
+        onClose={() => setDeleteAllUsersDialog({
+          isOpen: false,
+          isLoading: false
+        })}
+        onConfirm={confirmDeleteAllUsers}
+        userCount={users.length}
+        isLoading={deleteAllUsersDialog.isLoading}
+      />
     </div>
   );
 }

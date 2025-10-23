@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
+import { DeleteApplicationDialog, DeleteAllApplicationsDialog } from '@/components/ui/confirmation-dialog';
 import { 
   Building2, 
   Plus, 
@@ -99,6 +100,25 @@ export default function ApplicationsManagementPage() {
     status: 'active' as 'active' | 'maintenance' | 'inactive',
   });
 
+  // Confirmation dialog states
+  const [deleteApplicationDialog, setDeleteApplicationDialog] = useState<{
+    isOpen: boolean;
+    application: Application | null;
+    isLoading: boolean;
+  }>({
+    isOpen: false,
+    application: null,
+    isLoading: false
+  });
+
+  const [deleteAllApplicationsDialog, setDeleteAllApplicationsDialog] = useState<{
+    isOpen: boolean;
+    isLoading: boolean;
+  }>({
+    isOpen: false,
+    isLoading: false
+  });
+
   useEffect(() => {
     fetchApplications();
   }, []);
@@ -183,6 +203,15 @@ export default function ApplicationsManagementPage() {
   };
 
   const handleDeleteAllApplications = async () => {
+    setDeleteAllApplicationsDialog({
+      isOpen: true,
+      isLoading: false
+    });
+  };
+
+  const confirmDeleteAllApplications = async () => {
+    setDeleteAllApplicationsDialog(prev => ({ ...prev, isLoading: true }));
+    
     try {
       const response = await fetch('/api/applications', {
         method: 'DELETE',
@@ -194,17 +223,39 @@ export default function ApplicationsManagementPage() {
       if (response.ok) {
         toast.success('All applications deleted successfully');
         fetchApplications();
+        
+        setDeleteAllApplicationsDialog({
+          isOpen: false,
+          isLoading: false
+        });
       } else {
         toast.error('Failed to delete all applications');
+        setDeleteAllApplicationsDialog(prev => ({ ...prev, isLoading: false }));
       }
     } catch {
       toast.error('An error occurred while deleting applications');
+      setDeleteAllApplicationsDialog(prev => ({ ...prev, isLoading: false }));
     }
   };
 
   const handleDeleteApplication = async (appId: string) => {
+    const application = applications.find(app => app.id === appId);
+    if (application) {
+      setDeleteApplicationDialog({
+        isOpen: true,
+        application,
+        isLoading: false
+      });
+    }
+  };
+
+  const confirmDeleteApplication = async () => {
+    if (!deleteApplicationDialog.application) return;
+    
+    setDeleteApplicationDialog(prev => ({ ...prev, isLoading: true }));
+    
     try {
-      const response = await fetch(`/api/applications/${appId}`, {
+      const response = await fetch(`/api/applications/${deleteApplicationDialog.application.id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -214,11 +265,19 @@ export default function ApplicationsManagementPage() {
       if (response.ok) {
         toast.success('Application deleted successfully');
         fetchApplications();
+        
+        setDeleteApplicationDialog({
+          isOpen: false,
+          application: null,
+          isLoading: false
+        });
       } else {
         toast.error('Failed to delete application');
+        setDeleteApplicationDialog(prev => ({ ...prev, isLoading: false }));
       }
     } catch {
       toast.error('An error occurred while deleting application');
+      setDeleteApplicationDialog(prev => ({ ...prev, isLoading: false }));
     }
   };
 
@@ -300,39 +359,35 @@ export default function ApplicationsManagementPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-6">
+      <div className="flex items-center justify-center p-4 md:p-6">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading applications...</p>
+          <div className="animate-spin rounded-full h-8 w-8 md:h-12 md:w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground text-sm md:text-base">Loading applications...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+    <div className="space-y-4 md:space-y-6">
+      {/* Header */}
+      <div className="flex flex-col gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Applications Management</h1>
-            <p className="text-muted-foreground">Manage VR/AR applications and their configurations</p>
+            <h1 className="text-2xl md:text-3xl font-bold">Applications Management</h1>
+            <p className="text-sm md:text-base text-muted-foreground">Manage VR/AR applications and their configurations</p>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <Button
               variant="destructive"
-              onClick={() => {
-                if (confirm('Are you sure you want to delete ALL applications? This action cannot be undone!')) {
-                  handleDeleteAllApplications();
-                }
-              }}
+              onClick={handleDeleteAllApplications}
+              className="w-full sm:w-auto min-h-[44px]"
             >
               <Trash2 className="w-4 h-4 mr-2" />
               Delete All Apps
             </Button>
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
               <DialogTrigger asChild>
-                <Button>
+                <Button className="w-full sm:w-auto min-h-[44px]">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Application
                 </Button>
@@ -813,7 +868,7 @@ export default function ApplicationsManagementPage() {
                 </div>
               </div>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[180px]" id="applications-status-filter">
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -824,7 +879,7 @@ export default function ApplicationsManagementPage() {
                 </SelectContent>
               </Select>
               <Select value={platformFilter} onValueChange={setPlatformFilter}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[180px]" id="applications-platform-filter">
                   <SelectValue placeholder="Filter by platform" />
                 </SelectTrigger>
                 <SelectContent>
@@ -837,7 +892,7 @@ export default function ApplicationsManagementPage() {
             </div>
 
             {/* Applications Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {filteredApplications.map((app) => {
                 const PlatformIcon = platformIcons[app.platform];
                 const StatusIcon = statusOptions.find(s => s.value === app.status)?.icon || CheckCircle;
@@ -846,25 +901,19 @@ export default function ApplicationsManagementPage() {
                 return (
                   <Reveal key={app.id}>
                   <HoverCard>
-                  <Card className="relative">
+                  <Card className="relative overflow-hidden">
                     <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="p-2 bg-primary/10 rounded-lg">
-                            <PlatformIcon className="w-5 h-5 text-primary" />
-                          </div>
-                          <div>
-                            <CardTitle className="text-lg">{app.name}</CardTitle>
-                            <CardDescription className="flex items-center space-x-2">
-                              <span>{platformLabels[app.platform]}</span>
-                              <span>•</span>
-                              <span className={healthStatusColors[app.healthCheck?.status || 'healthy']}>
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                            <CardTitle className="text-lg truncate">{app.name}</CardTitle>
+                            <div className="text-xs space-y-1">
+                              <div className="truncate">{platformLabels[app.platform]}</div>
+                              <div className={`truncate ${healthStatusColors[app.healthCheck?.status || 'healthy']}`}>
                                 {app.healthCheck?.status || 'healthy'}
-                              </span>
-                            </CardDescription>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                        <Badge className={statusOptions.find(s => s.value === app.status)?.color}>
+                        <Badge className={`flex-shrink-0 ${statusOptions.find(s => s.value === app.status)?.color}`}>
                           <StatusIcon className="w-3 h-3 mr-1" />
                           {statusOptions.find(s => s.value === app.status)?.label}
                         </Badge>
@@ -886,8 +935,8 @@ export default function ApplicationsManagementPage() {
                         <span>Auth: {app.authRequired ? 'Required' : 'Optional'}</span>
                       </div>
 
-                      <div className="flex items-center justify-between pt-2">
-                        <div className="flex space-x-2">
+                      <div className="flex items-center justify-between pt-2 gap-2">
+                        <div className="flex space-x-1 flex-1">
                           <Button
                             size="sm"
                             variant="outline"
@@ -895,9 +944,10 @@ export default function ApplicationsManagementPage() {
                               setSelectedApplication(app);
                               setIsViewDialogOpen(true);
                             }}
+                            className="flex-1 min-w-0"
                           >
                             <Eye className="w-4 h-4 mr-1" />
-                            View
+                            <span className="hidden sm:inline">View</span>
                           </Button>
                           <Button
                             size="sm"
@@ -907,9 +957,10 @@ export default function ApplicationsManagementPage() {
                               populateFormForEdit(app);
                               setIsEditDialogOpen(true);
                             }}
+                            className="flex-1 min-w-0"
                           >
                             <Settings className="w-4 h-4 mr-1" />
-                            Configure
+                            <span className="hidden sm:inline">Configure</span>
                           </Button>
                         </div>
                         <div className="flex space-x-1">
@@ -933,11 +984,7 @@ export default function ApplicationsManagementPage() {
                           <Button
                             size="sm"
                             variant="destructive"
-                            onClick={() => {
-                              if (confirm(`Are you sure you want to delete "${app.name}"? This action cannot be undone!`)) {
-                                handleDeleteApplication(app.id);
-                              }
-                            }}
+                            onClick={() => handleDeleteApplication(app.id)}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -958,7 +1005,32 @@ export default function ApplicationsManagementPage() {
             )}
           </CardContent>
         </Card>
-      </div>
+
+      {/* Confirmation Dialogs */}
+      {deleteApplicationDialog.application && (
+        <DeleteApplicationDialog
+          isOpen={deleteApplicationDialog.isOpen}
+          onClose={() => setDeleteApplicationDialog({
+            isOpen: false,
+            application: null,
+            isLoading: false
+          })}
+          onConfirm={confirmDeleteApplication}
+          appName={deleteApplicationDialog.application.name}
+          isLoading={deleteApplicationDialog.isLoading}
+        />
+      )}
+
+      <DeleteAllApplicationsDialog
+        isOpen={deleteAllApplicationsDialog.isOpen}
+        onClose={() => setDeleteAllApplicationsDialog({
+          isOpen: false,
+          isLoading: false
+        })}
+        onConfirm={confirmDeleteAllApplications}
+        appCount={applications.length}
+        isLoading={deleteAllApplicationsDialog.isLoading}
+      />
     </div>
   );
 }

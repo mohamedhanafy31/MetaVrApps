@@ -211,7 +211,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         {/* Sidebar */}
         <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-background/70 dark:bg-background/80 backdrop-blur-md border-r border-blue-500/20 dark:border-blue-500/30 transform transition-all duration-300 ease-in-out md:translate-x-0 dark-mode-transition ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}>
+        } md:translate-x-0`}>
           <div className="p-4 h-full overflow-y-auto">
             {/* Main Navigation */}
             <nav className="space-y-2 mb-6">
@@ -248,7 +248,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 md:ml-64 pb-16 md:pb-0">
+        <main className="flex-1 md:ml-64 pb-20 md:pb-0 px-4 md:px-6">
           <PageTransition>
             {children}
           </PageTransition>

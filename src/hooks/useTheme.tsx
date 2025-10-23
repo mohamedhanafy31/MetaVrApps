@@ -19,15 +19,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme;
     if (savedTheme) {
-      const timeoutId = setTimeout(() => {
-        setTheme(savedTheme);
-      }, 0);
-      return () => clearTimeout(timeoutId);
+      setTheme(savedTheme);
     }
-    const timeoutId = setTimeout(() => {
-      setMounted(true);
-    }, 0);
-    return () => clearTimeout(timeoutId);
+    setMounted(true);
   }, []);
 
   const actualTheme = theme === 'system' 
@@ -66,10 +60,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [theme, mounted]);
-
-  if (!mounted) {
-    return <>{children}</>;
-  }
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, actualTheme }}>

@@ -453,4 +453,53 @@
   .particle-container {
     opacity: 0.5;
   }
+  
+  /* Mobile-specific improvements */
+  .mobile-optimized {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  /* Better touch targets */
+  button, [role="button"], input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improved text readability */
+  .text-mobile-sm {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .text-mobile-base {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  .text-mobile-lg {
+    font-size: 18px;
+    line-height: 1.4;
+  }
+  
+  /* Better spacing for mobile */
+  .mobile-spacing {
+    padding: 16px;
+    gap: 12px;
+  }
+  
+  /* Card optimizations */
+  .mobile-card {
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+  }
+  
+  /* Form optimizations */
+  .mobile-form input,
+  .mobile-form select,
+  .mobile-form textarea {
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 8px;
+  }
 }

@@ -1,11 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-type Theme = 'light' | 'dark';
+import { useTheme } from '@/hooks/useTheme';
 
 interface ThemeToggleProps {
   className?: string;
@@ -13,46 +11,22 @@ interface ThemeToggleProps {
 }
 
 export function ThemeToggle({ className, showLabel = false }: ThemeToggleProps) {
-  const [theme, setTheme] = useState<Theme>('light');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as Theme;
-    if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
-      const timeoutId = setTimeout(() => {
-        setTheme(savedTheme);
-      }, 0);
-      return () => clearTimeout(timeoutId);
-    }
-    const timeoutId = setTimeout(() => {
-      setMounted(true);
-    }, 0);
-    return () => clearTimeout(timeoutId);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-
-    const root = document.documentElement;
-    root.classList.toggle('dark', theme === 'dark');
-    localStorage.setItem('theme', theme);
-  }, [theme, mounted]);
+  const { theme, setTheme, actualTheme } = useTheme();
 
   const cycleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    // Cycle between light and dark, skipping system
+    if (theme === 'light') {
+      setTheme('dark');
+    } else if (theme === 'dark') {
+      setTheme('light');
+    } else {
+      // If system, switch to light
+      setTheme('light');
+    }
   };
 
-  if (!mounted) {
-    return (
-      <Button variant="ghost" size="sm" className={className}>
-        <Sun className="w-4 h-4" />
-        {showLabel && <span className="ml-2">Theme</span>}
-      </Button>
-    );
-  }
-
-  const Icon = theme === 'light' ? Sun : Moon;
-  const label = theme === 'light' ? 'Light' : 'Dark';
+  const Icon = actualTheme === 'light' ? Sun : Moon;
+  const label = actualTheme === 'light' ? 'Light' : 'Dark';
 
   return (
     <motion.div 
@@ -68,7 +42,7 @@ export function ThemeToggle({ className, showLabel = false }: ThemeToggleProps) 
       >
         <AnimatePresence mode="wait">
           <motion.div
-            key={theme}
+            key={actualTheme}
             initial={{ opacity: 0, rotate: -90 }}
             animate={{ opacity: 1, rotate: 0 }}
             exit={{ opacity: 0, rotate: 90 }}
@@ -81,7 +55,7 @@ export function ThemeToggle({ className, showLabel = false }: ThemeToggleProps) 
         </AnimatePresence>
         
         {/* Glow effect for dark mode */}
-        {theme === 'dark' && (
+        {actualTheme === 'dark' && (
           <motion.div
             className="absolute inset-0 rounded-md bg-gradient-to-r from-blue-500/20 to-purple-500/20"
             initial={{ opacity: 0 }}
