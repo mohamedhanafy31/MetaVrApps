@@ -1,49 +1,36 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 
-// Load Firebase configuration from service account file
+// Load Firebase configuration from downloaded service account file
 function getFirebaseConfig() {
-  const possiblePaths = [
-    path.join(process.cwd(), 'firebase-service-account.json'),
-    path.join(process.cwd(), 'downloads', 'google-drive-file'),
-    path.join(process.cwd(), 'downloads', 'firebase-service-account.json')
-  ];
+  const credentialPath = path.join(process.cwd(), 'downloads', 'firebase-service-account.json');
   
-  for (const filePath of possiblePaths) {
-    try {
-      if (fs.existsSync(filePath)) {
-        const fileContent = fs.readFileSync(filePath, 'utf8');
-        const serviceAccount = JSON.parse(fileContent);
-        
-        // Extract Firebase client configuration from service account
-        return {
-          apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'AIzaSyDummyKey', // Fallback for API key
-          authDomain: `${serviceAccount.project_id}.firebaseapp.com`,
-          projectId: serviceAccount.project_id,
-          storageBucket: `${serviceAccount.project_id}.appspot.com`,
-          messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '123456789', // Fallback
-          appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || '1:123456789:web:abcdef', // Fallback
-        };
-      }
-    } catch (error) {
-      console.warn(`Failed to load Firebase config from ${filePath}:`, error);
-      continue;
-    }
+  if (!fs.existsSync(credentialPath)) {
+    console.error('❌ Firebase service account file not found!');
+    console.error(`Expected location: ${credentialPath}`);
+    console.error('Please run: npm run download-file');
+    throw new Error('Firebase service account file not found. Run npm run download-file first.');
   }
   
-  // Fallback to environment variables if no service account file found
-  console.warn('No Firebase service account file found, using environment variables');
-  return {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  };
+  try {
+    const serviceAccount = require(credentialPath);
+    
+    // Extract Firebase client configuration from service account
+    return {
+      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'AIzaSyDummyKey', // Fallback for API key
+      authDomain: `${serviceAccount.project_id}.firebaseapp.com`,
+      projectId: serviceAccount.project_id,
+      storageBucket: `${serviceAccount.project_id}.appspot.com`,
+      messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '123456789', // Fallback
+      appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || '1:123456789:web:abcdef', // Fallback
+    };
+  } catch (error) {
+    console.error('❌ Failed to load Firebase config:', error);
+    throw new Error('Failed to load Firebase configuration');
+  }
 }
 
 const firebaseConfig = getFirebaseConfig();

@@ -49,21 +49,36 @@ function startDevServer(): void {
 }
 
 /**
- * Main startup function
+ * Main startup function - FORCES download before starting
  */
 async function main() {
   console.log('🎯 MetaVR Dashboard Startup Script');
   console.log('================================');
   
-  // Check if downloads directory exists
-  const downloadsDir = path.join(process.cwd(), 'downloads');
-  const hasDownloads = fileExists(downloadsDir) && fs.readdirSync(downloadsDir).length > 0;
+  // ALWAYS download credentials - no skipping
+  console.log('📥 Downloading Firebase credentials (FORCED)...');
+  await runDownload();
   
-  if (!hasDownloads) {
-    console.log('📥 No downloaded files found, downloading...');
-    await runDownload();
-  } else {
-    console.log('📁 Downloaded files already exist, skipping download');
+  // Verify the file exists and is valid
+  const credentialPath = path.join(process.cwd(), 'downloads', 'firebase-service-account.json');
+  if (!fileExists(credentialPath)) {
+    console.error('❌ CRITICAL: Firebase credentials not found after download!');
+    console.error(`Expected: ${credentialPath}`);
+    process.exit(1);
+  }
+  
+  // Validate JSON structure
+  try {
+    const serviceAccount = require(credentialPath);
+    if (!serviceAccount.project_id || !serviceAccount.private_key) {
+      throw new Error('Invalid service account structure');
+    }
+    console.log('✅ Firebase credentials validated successfully');
+    console.log(`📁 Project ID: ${serviceAccount.project_id}`);
+  } catch (error) {
+    console.error('❌ CRITICAL: Invalid Firebase credentials!');
+    console.error('Error:', error);
+    process.exit(1);
   }
   
   // Start the development server

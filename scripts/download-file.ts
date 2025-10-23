@@ -169,7 +169,7 @@ function extractFileId(url: string): string | null {
 async function main() {
   const googleDriveUrl = 'https://drive.google.com/file/d/15jxv-pTmrQ9QgidJX1vscBJ4cC0xT4wi/view?usp=sharing';
   const outputDir = path.join(process.cwd(), 'downloads');
-  const outputPath = path.join(outputDir, 'google-drive-file');
+  const outputPath = path.join(outputDir, 'firebase-service-account.json');
   
   try {
     console.log('🚀 Starting Google Drive file download...');

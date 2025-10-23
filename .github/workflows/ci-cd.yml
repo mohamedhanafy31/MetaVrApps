@@ -35,6 +35,7 @@ jobs:
     
     - name: Download Firebase service account
       run: npm run download-file
+      continue-on-error: false  # Fail build if download fails
     
     - name: Build application
       run: npm run build
@@ -69,6 +70,7 @@ jobs:
     
     - name: Download Firebase service account
       run: npm run download-file
+      continue-on-error: false  # Fail build if download fails
     
     - name: Build application
       run: npm run build
