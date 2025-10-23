@@ -88,7 +88,7 @@ export default function AdminDashboard() {
         const appsData = await appsResponse.json();
         setApplications(appsData.data);
       }
-    } catch {
+    } catch (error) {
       console.error('Error fetching dashboard data:', error);
       toast.error('Failed to load dashboard data');
     } finally {

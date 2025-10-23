@@ -52,7 +52,12 @@ function Badge({
   const Comp = asChild ? Slot : "span"
 
   if (animated && variant === "active") {
-    const { ...motionProps } = props;
+    // Filter out conflicting React drag events
+    const motionProps = Object.fromEntries(
+      Object.entries(props).filter(([key]) => 
+        !['onDrag', 'onDragEnd', 'onDragStart', 'onAnimationStart', 'onAnimationEnd', 'onAnimationIteration'].includes(key)
+      )
+    );
     return (
       <motion.span
         data-slot="badge"

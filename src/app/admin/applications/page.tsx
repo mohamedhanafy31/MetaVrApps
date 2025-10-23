@@ -113,7 +113,7 @@ export default function ApplicationsManagementPage() {
       } else {
         toast.error('Failed to load applications');
       }
-    } catch {
+    } catch (error) {
       console.error('Error fetching applications:', error);
       toast.error('Failed to load applications');
     } finally {

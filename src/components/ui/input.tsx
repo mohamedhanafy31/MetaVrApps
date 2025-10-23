@@ -19,7 +19,12 @@ function Input({ className, type, variant = "default", error = false, ...props }
   const errorClasses = error ? "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/50" : ""
 
   if (variant === "vr-glow") {
-    const { ...motionProps } = props;
+    // Filter out conflicting React drag events
+    const motionProps = Object.fromEntries(
+      Object.entries(props).filter(([key]) => 
+        !['onDrag', 'onDragEnd', 'onDragStart', 'onAnimationStart', 'onAnimationEnd', 'onAnimationIteration'].includes(key)
+      )
+    );
     return (
       <motion.input
         type={type}

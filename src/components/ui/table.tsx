@@ -65,7 +65,12 @@ function TableRow({ className, variant = "default", ...props }: TableRowProps) {
   }
 
   if (variant === "hover-lift") {
-    const { ...motionProps } = props;
+    // Filter out conflicting React drag events
+    const motionProps = Object.fromEntries(
+      Object.entries(props).filter(([key]) => 
+        !['onDrag', 'onDragEnd', 'onDragStart', 'onAnimationStart', 'onAnimationEnd', 'onAnimationIteration'].includes(key)
+      )
+    );
     return (
       <motion.tr
         data-slot="table-row"

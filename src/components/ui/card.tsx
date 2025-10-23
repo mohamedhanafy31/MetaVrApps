@@ -27,7 +27,12 @@ function Card({ className, variant = "default", glowColor = "blue", ...props }: 
   }
 
   if (variant === "holographic" || variant === "premium" || variant === "elite") {
-    const { ...motionProps } = props;
+    // Filter out conflicting React drag events
+    const motionProps = Object.fromEntries(
+      Object.entries(props).filter(([key]) => 
+        !['onDrag', 'onDragEnd', 'onDragStart', 'onAnimationStart', 'onAnimationEnd', 'onAnimationIteration'].includes(key)
+      )
+    );
     return (
       <motion.div
         className={cn(baseClasses, variantClasses[variant], className)}
@@ -45,7 +50,12 @@ function Card({ className, variant = "default", glowColor = "blue", ...props }: 
   }
 
   if (variant === "floating") {
-    const { ...motionProps } = props;
+    // Filter out conflicting React drag events
+    const motionProps = Object.fromEntries(
+      Object.entries(props).filter(([key]) => 
+        !['onDrag', 'onDragEnd', 'onDragStart', 'onAnimationStart', 'onAnimationEnd', 'onAnimationIteration'].includes(key)
+      )
+    );
     return (
       <motion.div
         className={cn(baseClasses, variantClasses[variant], className)}
