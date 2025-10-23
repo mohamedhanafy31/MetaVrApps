@@ -27,3 +27,9 @@
 {"ts":"2025-10-23T07:41:14.201Z","event":"client.login.submit","from":"client","email":"admin@metavr.com","rememberMe":false}
 {"ts":"2025-10-23T07:41:17.367Z","event":"client.login.response","from":"client","ok":false,"status":500}
 {"ts":"2025-10-23T07:41:17.388Z","event":"client.login.invalid_credentials","from":"client"}
+{"ts":"2025-10-23T07:41:45.554Z","event":"client.login.submit","from":"client","email":"admin@metavr.com","rememberMe":false}
+{"ts":"2025-10-23T07:41:45.829Z","event":"client.login.response","from":"client","ok":false,"status":500}
+{"ts":"2025-10-23T07:41:45.851Z","event":"client.login.invalid_credentials","from":"client"}
+{"ts":"2025-10-23T07:41:48.359Z","event":"client.login.submit","from":"client","email":"admin@metavr.com","rememberMe":false}
+{"ts":"2025-10-23T07:41:48.398Z","event":"client.login.response","from":"client","ok":false,"status":500}
+{"ts":"2025-10-23T07:41:48.417Z","event":"client.login.invalid_credentials","from":"client"}
