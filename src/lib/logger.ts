@@ -11,6 +11,12 @@ async function ensureLogDir(): Promise<void> {
 }
 
 export async function writeLog(event: string, details: Record<string, unknown> = {}): Promise<void> {
+  // Skip file logging in production/serverless environments
+  if (process.env.NODE_ENV === 'production' || process.env.NETLIFY === 'true') {
+    console.log(`[LOG] ${event}:`, details);
+    return;
+  }
+
   try {
     await ensureLogDir();
     const entry = {
