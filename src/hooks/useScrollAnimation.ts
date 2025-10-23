@@ -56,7 +56,7 @@ export function useStaggeredScrollAnimation(
         timeouts.forEach(clearTimeout);
       };
     }
-  }, [isInView, itemCount]);
+  }, [isInView, itemCount, staggerDelay]);
 
   return {
     ref,

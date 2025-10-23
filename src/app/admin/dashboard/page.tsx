@@ -88,7 +88,7 @@ export default function AdminDashboard() {
         const appsData = await appsResponse.json();
         setApplications(appsData.data);
       }
-    } catch (error) {
+    } catch {
       console.error('Error fetching dashboard data:', error);
       toast.error('Failed to load dashboard data');
     } finally {
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
       } else {
         toast.error('Failed to approve request');
       }
-    } catch (error) {
+    } catch {
       toast.error('An error occurred');
     }
   };
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
       } else {
         toast.error('Failed to reject request');
       }
-    } catch (error) {
+    } catch {
       toast.error('An error occurred');
     }
   };
@@ -312,7 +312,7 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {applications.map((app, index) => (
+                  {applications.map((app) => (
                     <FloatingCard key={app.id}>
                       <Card variant="holographic" className="p-4 space-y-3">
                         <div className="flex items-center justify-between">

@@ -65,7 +65,7 @@ function TableRow({ className, variant = "default", ...props }: TableRowProps) {
   }
 
   if (variant === "hover-lift") {
-    const { onDrag, onDragEnd, onDragStart, onAnimationStart, onAnimationEnd, onAnimationIteration, ...motionProps } = props;
+    const { ...motionProps } = props;
     return (
       <motion.tr
         data-slot="table-row"

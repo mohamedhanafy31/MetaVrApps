@@ -52,7 +52,7 @@ function Badge({
   const Comp = asChild ? Slot : "span"
 
   if (animated && variant === "active") {
-    const { onDrag, onDragEnd, onDragStart, onAnimationStart, onAnimationEnd, onAnimationIteration, ...motionProps } = props;
+    const { ...motionProps } = props;
     return (
       <motion.span
         data-slot="badge"

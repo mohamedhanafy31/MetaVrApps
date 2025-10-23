@@ -16,6 +16,8 @@ function getFirebaseConfig() {
   }
   
   try {
+    // Use require() pattern as specified - disable ESLint for this line
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const serviceAccount = require(credentialPath);
     
     // Extract Firebase client configuration from service account

@@ -69,6 +69,8 @@ async function main() {
   
   // Validate JSON structure
   try {
+    // Use require() pattern as specified - disable ESLint for this line
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const serviceAccount = require(credentialPath);
     if (!serviceAccount.project_id || !serviceAccount.private_key) {
       throw new Error('Invalid service account structure');

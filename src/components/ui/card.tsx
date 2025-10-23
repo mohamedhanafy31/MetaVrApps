@@ -27,7 +27,7 @@ function Card({ className, variant = "default", glowColor = "blue", ...props }: 
   }
 
   if (variant === "holographic" || variant === "premium" || variant === "elite") {
-    const { onDrag, onDragEnd, onDragStart, onAnimationStart, onAnimationEnd, onAnimationIteration, ...motionProps } = props;
+    const { ...motionProps } = props;
     return (
       <motion.div
         className={cn(baseClasses, variantClasses[variant], className)}
@@ -45,7 +45,7 @@ function Card({ className, variant = "default", glowColor = "blue", ...props }: 
   }
 
   if (variant === "floating") {
-    const { onDrag, onDragEnd, onDragStart, onAnimationStart, onAnimationEnd, onAnimationIteration, ...motionProps } = props;
+    const { ...motionProps } = props;
     return (
       <motion.div
         className={cn(baseClasses, variantClasses[variant], className)}
