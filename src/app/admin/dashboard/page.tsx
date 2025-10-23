@@ -5,8 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { FloatingCard, AdvancedHolographicCard } from '@/components/ui/vr-effects';
+import { AdvancedHolographicCard } from '@/components/ui/vr-effects';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { HoverCard } from '@/components/motion/HoverCard';
 import { 
@@ -138,19 +137,6 @@ export default function AdminDashboard() {
     }
   };
 
-
-  const getPlatformIcon = (platform: string) => {
-    switch (platform) {
-      case 'mobile':
-        return '📱';
-      case 'web':
-        return '🌐';
-      case 'desktop':
-        return '💻';
-      default:
-        return '📱';
-    }
-  };
 
   if (loading) {
     return (

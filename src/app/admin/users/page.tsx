@@ -7,10 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DeleteUserDialog, DeleteAllUsersDialog } from '@/components/ui/confirmation-dialog';
 import { 
   Plus, 
@@ -211,7 +209,7 @@ export default function UsersPage() {
         user: null,
         isLoading: false
       });
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete user');
       setDeleteUserDialog(prev => ({ ...prev, isLoading: false }));
     }
@@ -238,7 +236,7 @@ export default function UsersPage() {
         isOpen: false,
         isLoading: false
       });
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete all users');
       setDeleteAllUsersDialog(prev => ({ ...prev, isLoading: false }));
     }
@@ -250,19 +248,6 @@ export default function UsersPage() {
         ? { ...user, status: user.status === 'active' ? 'inactive' : 'active' }
         : user
     ));
-  };
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'active':
-        return <Badge variant="success">Active</Badge>;
-      case 'inactive':
-        return <Badge variant="secondary">Inactive</Badge>;
-      case 'suspended':
-        return <Badge variant="destructive">Suspended</Badge>;
-      default:
-        return <Badge variant="secondary">{status}</Badge>;
-    }
   };
 
   const getRoleBadge = (role: string) => {

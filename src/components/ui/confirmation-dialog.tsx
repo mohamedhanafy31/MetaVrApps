@@ -40,7 +40,7 @@ export function ConfirmationDialog({
     try {
       await onConfirm();
       onClose();
-    } catch (error) {
+    } catch {
       // Error handling is done by the parent component
     } finally {
       setIsDeleting(false);

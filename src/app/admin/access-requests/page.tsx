@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { HoverCard } from '@/components/motion/HoverCard'
 import { Reveal } from '@/components/motion/Reveal'
 import { toast } from 'sonner'

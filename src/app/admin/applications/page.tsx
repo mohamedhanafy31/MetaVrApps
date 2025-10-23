@@ -53,12 +53,6 @@ interface Application {
   updatedAt: string;
 }
 
-const platformIcons = {
-  desktop: Monitor,
-  web: Globe,
-  mobile: Smartphone,
-};
-
 const platformLabels = {
   desktop: 'Desktop',
   web: 'Web',
@@ -894,7 +888,6 @@ export default function ApplicationsManagementPage() {
             {/* Applications Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {filteredApplications.map((app) => {
-                const PlatformIcon = platformIcons[app.platform];
                 const StatusIcon = statusOptions.find(s => s.value === app.status)?.icon || CheckCircle;
                 const usagePercentage = (app.currentUsers / app.maxUsers) * 100;
 

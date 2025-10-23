@@ -24,7 +24,7 @@ export function SwipeableCard({
   const [isDragging, setIsDragging] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const handleDrag = (event: any, info: PanInfo) => {
+  const handleDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     if (window.innerWidth > 768) return; // Only on mobile
     
     const threshold = 50;
