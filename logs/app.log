@@ -24,3 +24,6 @@
 {"ts":"2025-10-23T07:24:36.879Z","event":"client.login.navigate_handshake","from":"client"}
 {"ts":"2025-10-23T07:24:36.893Z","event":"auth.handshake.success","userId":"admin-user","role":"admin","ms":2}
 {"ts":"2025-10-23T07:24:38.959Z","event":"applications.list.success","userId":"admin-user","count":13,"filters":{"status":null,"platform":null}}
+{"ts":"2025-10-23T07:41:14.201Z","event":"client.login.submit","from":"client","email":"admin@metavr.com","rememberMe":false}
+{"ts":"2025-10-23T07:41:17.367Z","event":"client.login.response","from":"client","ok":false,"status":500}
+{"ts":"2025-10-23T07:41:17.388Z","event":"client.login.invalid_credentials","from":"client"}
