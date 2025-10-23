@@ -182,7 +182,8 @@ export default function AccessRequestsAdminPage() {
           <CardDescription>Approve or reject access requests</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-md border overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block rounded-md border overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -231,6 +232,77 @@ export default function AccessRequestsAdminPage() {
                 )}
               </TableBody>
             </Table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4">
+            {loading ? (
+              <div className="text-center py-10 text-muted-foreground">Loading...</div>
+            ) : requests.length === 0 ? (
+              <div className="text-center py-10 text-muted-foreground">No requests</div>
+            ) : (
+              requests.map((r) => (
+                <Card key={r.id} className="p-4">
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate">{r.fullName}</div>
+                        <div className="text-sm text-muted-foreground truncate">{r.email}</div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          disabled={r.status !== 'pending'} 
+                          onClick={() => approve(r.id)}
+                          className="text-xs px-2 py-1"
+                        >
+                          Approve
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="destructive" 
+                          disabled={r.status !== 'pending'} 
+                          onClick={() => reject(r.id)}
+                          className="text-xs px-2 py-1"
+                        >
+                          Reject
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Company:</span>
+                        <span className="font-medium">{r.companyName}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Job Title:</span>
+                        <span>{r.jobTitle}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Application:</span>
+                        <span className="font-medium">{r.applicationName || '-'}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Status:</span>
+                        <span className={`capitalize px-2 py-1 rounded-full text-xs ${
+                          r.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                          r.status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                          'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                        }`}>
+                          {r.status}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Submitted:</span>
+                        <span>{formatDate(r.createdAt)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>

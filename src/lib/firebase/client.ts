@@ -1,14 +1,12 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import * as fs from 'fs';
-import * as path from 'path';
 
-// Load Firebase configuration from environment variable or local file
+// Load Firebase configuration from environment variables
 function getFirebaseConfig() {
   let serviceAccount;
   
-  // First try: JSON environment variable (production)
+  // Primary: JSON environment variable (recommended)
   if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
     try {
       serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
@@ -18,7 +16,7 @@ function getFirebaseConfig() {
       throw new Error('Invalid FIREBASE_SERVICE_ACCOUNT_JSON format');
     }
   }
-  // Second try: Base64 encoded JSON environment variable
+  // Alternative: Base64 encoded JSON environment variable
   else if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
     try {
       const decodedKey = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_KEY, 'base64').toString('utf-8');
@@ -29,25 +27,10 @@ function getFirebaseConfig() {
       throw new Error('Invalid FIREBASE_SERVICE_ACCOUNT_KEY format');
     }
   }
-  // Fallback: Try to load from local file (development)
   else {
-    const credentialPath = path.join(process.cwd(), 'downloads', 'firebase-service-account.json');
-    
-    if (!fs.existsSync(credentialPath)) {
-      console.error('❌ Firebase service account file not found!');
-      console.error(`Expected location: ${credentialPath}`);
-      console.error('Please run: npm run download-file');
-      throw new Error('Firebase service account file not found. Run npm run download-file first.');
-    }
-    
-    try {
-      const serviceAccountContent = fs.readFileSync(credentialPath, 'utf8');
-      serviceAccount = JSON.parse(serviceAccountContent);
-      console.log('✅ Firebase client config loaded from local file');
-    } catch (error) {
-      console.error('❌ Failed to load Firebase config:', error);
-      throw new Error('Failed to load Firebase configuration');
-    }
+    console.error('❌ Firebase service account not found!');
+    console.error('Please set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_SERVICE_ACCOUNT_KEY environment variable.');
+    throw new Error('Firebase service account not found. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_SERVICE_ACCOUNT_KEY environment variable.');
   }
   
   // Extract Firebase client configuration from service account
