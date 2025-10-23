@@ -10,7 +10,8 @@
     "lint": "eslint",
     "init-db": "tsx scripts/init-db.ts",
     "download-file": "tsx scripts/download-file.ts",
-    "generate-secrets": "tsx scripts/generate-secrets.ts"
+    "generate-secrets": "tsx scripts/generate-secrets.ts",
+    "validate-env": "./scripts/validate-env.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
